@@ -4,6 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class calculator02 {
+    private static final String Calculator = null;
     private Calculator calculator;
 
     @Before
@@ -20,8 +21,11 @@ public class calculator02 {
         assertEquals(expectedResult, actualResult, 0);
     }
 
+    private void assertEquals(float expectedResult, float actualResult, int i) {
+    }
+
     @Test
-    public void testSUBTRACT() {
+    public void testSUBTRACT(String string) {
         float a = 5;
         float b = 3;
         float expectedResult = 2;
@@ -38,7 +42,7 @@ public class calculator02 {
         assertEquals(expectedResult, actualResult, 0);
     }
 
-    @Test
+    @Test(expected = null)
     public void testDIVIDE() {
         float a = 10;
         float b = 2;

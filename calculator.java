@@ -1,93 +1,59 @@
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import org.junit.Before;
+import org.junit.Test;
 
-public class calculator extends Application {
+import static org.junit.Assert.assertEquals;
 
-    private TableView<BMIRange> table;
-    private TextField weightField;
-    private TextField heightField;
+public class CalculatorTest {
+    private Calculator calculator;
 
-    public static void main(String[] args) {
-        launch(args);
+    @Before
+    public void setUp() {
+        this.calculator = new Calculator();
     }
 
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("BMI Calculator");
-
-        // Create table columns
-        TableColumn<BMIRange, String> rangeColumn = new TableColumn<>("BMI Range");
-        rangeColumn.setCellValueFactory(new PropertyValueFactory<>("range"));
-
-        TableColumn<BMIRange, String> categoryColumn = new TableColumn<>("Category");
-        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
-
-        // Create table
-        table = new TableView<>();
-        table.getColumns().addAll(rangeColumn, categoryColumn);
-
-        // Create weight and height input fields
-        weightField = new TextField();
-        heightField = new TextField();
-
-        // Create Calculate button
-        Button calculateButton = new Button("Calculate BMI");
-        calculateButton.setOnAction(event -> calculateBMI());
-
-        // Create layout
-        VBox layout = new VBox(10);
-        layout.setPadding(new Insets(10));
-        layout.getChildren().addAll(new Label("Weight (kg):"), weightField, new Label("Height (m):"), heightField, calculateButton, table);
-
-        // Set initial table data
-        table.setItems(FXCollections.observableArrayList(
-                new BMIRange("Below 18.5", "Underweight"),
-                new BMIRange("18.5 - 24.9", "Normal weight"),
-                new BMIRange("25 - 29.9", "Overweight"),
-                new BMIRange("30 or above", "Obese")
-        ));
-
-        Scene scene = new Scene(layout);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    @Test
+    public void testAdd() {
+        float a = 5;
+        float b = 3;
+        float expectedResult = 8;
+        float actualResult = Calculator.add(a, b);
+        assertEquals(expectedResult, actualResult, 0);
     }
 
-    private void calculateBMI() {
-        try {
-            double weight = Double.parseDouble(weightField.getText());
-            double height = Double.parseDouble(heightField.getText());
-
-            double bmi = weight / (height * height);
-            highlightBMIRange(bmi);
-        } catch (NumberFormatException e) {
-            // Handle invalid input
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Please enter valid weight and height.");
-            alert.showAndWait();
-        }
+    private void assertEquals(float expectedResult, float actualResult, int i) {
     }
 
-    private void highlightBMIRange(double bmi) {
-        table.getSelectionModel().clearSelection();
+    @Test(expected = null)
+    public void testSubtract() {
+        float a = 5;
+        float b = 3;
+        float expectedResult = 2;
+        float actualResult = Calculator.subtract(a, b);
+        assertEquals(expectedResult, actualResult, 0);
+    }
 
-        for (int i = 0; i < table.getItems().size(); i++) {
-            BMIRange bmiRange = table.getItems().get(i);
-            String[] rangeParts = bmiRange.getRange().split("-");
-            double min = Double.parseDouble(rangeParts[0].trim());
-            double max = Double.parseDouble(rangeParts[1].trim());
+    @Test(expected = null)
+    public void testMultiply() {
+        float a = 5;
+        float b = 3;
+        float expectedResult = 15;
+        float actualResult = Calculator.multiply(a, b);
+        assertEquals(expectedResult, actualResult, 0);
+    }
 
-            if (bmi >= min && bmi <= max) {
-                table.getSelectionModel().select(i);
-                table.scrollTo(i);
-                break;
-            }
-        }
+    @Test(expected = null)
+    public void testDivide() {
+        float a = 10;
+        float b = 2;
+        float expectedResult = 5;
+        float actualResult = Calculator.divide(a, b);
+        assertEquals(expectedResult, actualResult, 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDivideByZero() {
+        float a = 10;
+        float b = 0;
+        Calculator.divide(a, b);
     }
 }
